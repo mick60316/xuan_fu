@@ -5,10 +5,10 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:xuan_fu/app/modules/rent/rent_controller.dart';
 
 class PlateButton extends StatefulWidget {
-  PlateButton({Key? key, required this.plateNumber, required this.isModified})
+  PlateButton({Key? key, required this.plateNumber, required this.onClickEvent})
       : super(key: key);
   final String plateNumber;
-  final bool isModified;
+  final Function onClickEvent;
 
   @override
   State<PlateButton> createState() => _PlateButtonState();
@@ -25,7 +25,6 @@ class _PlateButtonState extends State<PlateButton> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<RentController>();
     String color = widget.plateNumber.split(' ')[1];
     name = widget.plateNumber.split(' ')[0];
     switch (color) {
@@ -49,9 +48,7 @@ class _PlateButtonState extends State<PlateButton> {
 
     return GestureDetector(
       onTap: () {
-        widget.isModified
-            ? controller.changeCarStatusToNormal(widget.plateNumber)
-            : controller.changeCarStatusToModified(widget.plateNumber);
+        widget.onClickEvent.call();
       },
       child: Container(
           width: 100,

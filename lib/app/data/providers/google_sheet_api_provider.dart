@@ -21,26 +21,18 @@ class GoogleSheetApiProvider {
       CarsInfos.add(CarsInfo.fromJson(element));
     });
     return CarsInfos;
-    //return result['CarsInfos'];
+  }
 
-    //print(index['CarInfos']);
-
-    //   var httpClient = new HttpClient();
-    //
-    //   var uri = new Uri.http('script.google.com',
-    //       '/macros/s/AKfycbzng52r4I71lZ997uYivxhdDKUeZQngqkdmxEk2q2akH5xG1a_XVy6bAWofaVlxd_4G/exec');
-    //   var request = await httpClient.getUrl(uri);
-    //   var response = await request.close();
-    //   var responseBody = await response.transform(utf8.decoder).join();
-    //   print('mike ' + responseBody);
-    // Response response = await Dio.post(
-    // //     "/test", data: {"id": 3, "name": "liuwangshu"})
-    // HttpService httpService = HttpService();
-    // Response response;
-    //
-    // response = await httpService.post(
-    //     'https://script.google.com/macros/s/AKfycbwYWemEXAwcPNF2hI5J8oQgyo1mgoHYekBpRALi_5Xieu5IX9p1EBkRQ7rvt2HaQ44S_g/exec');
-    // print('mike' + response.data.toString());
+  Future<Response?> returnCars({required List<String> cars}) async {
+    String carsString = "";
+    cars.forEach((element) {
+      carsString += element + ',';
+    });
+    var body = {
+      'action': 'return',
+      'cars': carsString,
+    };
+    return await baseApiProvider?.post(body: body);
   }
 
   Future<Response?> rentCars(
@@ -48,7 +40,8 @@ class GoogleSheetApiProvider {
       required String name,
       required String currentTime,
       required String returnTime,
-      required String remark}) async {
+      required String remark,
+      required String money}) async {
     String carsString = "";
     cars.forEach((element) {
       carsString += element + ',';
@@ -60,7 +53,8 @@ class GoogleSheetApiProvider {
       'name': name,
       'currentTime': currentTime,
       'returnTime': returnTime,
-      'remark': remark
+      'remark': remark,
+      'money': money
     };
     return await baseApiProvider?.post(body: body);
   }

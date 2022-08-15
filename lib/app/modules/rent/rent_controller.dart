@@ -7,19 +7,17 @@ class RentController extends GetxController {
   final googleSheetApiProvider = Get.find<GoogleSheetApiProvider>();
   final normalCarList = <String>[].obs;
   final modifiedCarList = <String>[].obs;
+  final isRentCarList = <String>[].obs;
+  final modifiedIsRentCarList = <String>[].obs;
   final unRentCarsCount = 0.obs;
+  final isRentCarCount = 0.obs;
   final isLoading = false.obs;
 
-  void changeCarStatusToModified(String carNumber) {
-    if (!normalCarList.contains(carNumber)) return;
-    normalCarList.remove(carNumber);
-    modifiedCarList.add(carNumber);
-  }
-
-  void changeCarStatusToNormal(String carNumber) {
-    if (!modifiedCarList.contains(carNumber)) return;
-    modifiedCarList.remove(carNumber);
-    normalCarList.add(carNumber);
+  void moveCarFromTo(
+      RxList<String> fromList, RxList<String> toList, String carNumber) {
+    if (!fromList.contains(carNumber)) return;
+    fromList.remove(carNumber);
+    toList.add(carNumber);
   }
 
   void cleaModifiedList() {
@@ -27,23 +25,40 @@ class RentController extends GetxController {
   }
 
   Future<void> initList() async {
+    isLoading.value = true;
     final res = await googleSheetApiProvider.getAllCarsInfo();
     modifiedCarList.clear();
     normalCarList.clear();
+    modifiedIsRentCarList.clear();
+    isRentCarList.clear();
     unRentCarsCount.value = 0;
+    isRentCarCount.value = 0;
     for (var element in res) {
       if (element.status != "出租中") {
         normalCarList.add(element.number.toString());
         unRentCarsCount.value++;
+      } else {
+        isRentCarList.add(element.number.toString());
+        isRentCarCount.value++;
       }
     }
     isLoading.value = false;
   }
 
+  Future<void> returnCars() async {
+    isLoading.value = true;
+    final res =
+        await googleSheetApiProvider.returnCars(cars: modifiedIsRentCarList);
+    if (res?.data['message'] == "ok") {
+      initList();
+    }
+  }
+
   Future<void> rentCars(
       {required String name,
       required String returnTime,
-      required String remark}) async {
+      required String remark,
+      required String money}) async {
     isLoading.value = true;
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy年MM月dd日 – kk:mm').format(now);
@@ -52,7 +67,8 @@ class RentController extends GetxController {
         name: name,
         currentTime: formattedDate,
         returnTime: returnTime,
-        remark: remark);
+        remark: remark,
+        money: money);
 
     if (res?.data['message'] == "ok") {
       initList();
