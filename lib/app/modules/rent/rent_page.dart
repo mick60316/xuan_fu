@@ -18,101 +18,103 @@ class RentPage extends GetView<RentController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '庫存車輛：${controller.unRentCarsCount}',
-                  style: TextStyle(fontSize: 30),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            CarStatusView(
-                sourceLabel: '待租車輛',
-                targetLabel: '預租車輛',
-                sourceList: controller.normalCarList,
-                targetList: controller.modifiedCarList),
-            SizedBox(height: 10),
-            Container(
-              width: 300,
-              child: Column(
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextField(
-                    controller: timeInputController,
-                    onTap: () {
-                      timeInputController.text = '';
-                      DatePicker.showDateTimePicker(context,
-                          showTitleActions: true,
-                          minTime: DateTime(2018, 3, 5),
-                          maxTime: DateTime(2019, 6, 7),
-                          theme: const DatePickerTheme(
-                              backgroundColor: Colors.blueAccent,
-                              itemStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                              doneStyle:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                          onChanged: (date) {}, onConfirm: (date) {
-                        String formattedDate =
-                            DateFormat('yyyy年MM月dd日 – kk:mm').format(date);
-                        timeInputController.text = formattedDate;
-                      }, currentTime: DateTime.now(), locale: LocaleType.zh);
-                    },
-                    decoration: InputDecoration(labelText: '歸還日期'),
-                  ),
-                  TextField(
-                    controller: nameInputController,
-                    decoration: InputDecoration(labelText: '名字'),
-                  ),
-                  TextField(
-                    controller: moneyInputController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: '金額'),
-                  ),
-                  TextField(
-                    controller: remarkInputController,
-                    decoration: InputDecoration(labelText: '備註'),
+                  Text(
+                    '庫存車輛：${controller.unRentCarsCount}',
+                    style: TextStyle(fontSize: 30),
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    nameInputController.text = '';
-                    timeInputController.text = '';
-                    remarkInputController.text = '';
-                    moneyInputController.text = '';
-                  },
-                  child: Text('清除'),
+              SizedBox(height: 20),
+              CarStatusView(
+                  sourceLabel: '待租車輛',
+                  targetLabel: '預租車輛',
+                  sourceList: controller.normalCarList,
+                  targetList: controller.modifiedCarList),
+              SizedBox(height: 10),
+              Container(
+                width: 300,
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: timeInputController,
+                      onTap: () {
+                        timeInputController.text = '';
+                        DatePicker.showDateTimePicker(context,
+                            showTitleActions: true,
+                            minTime: DateTime(2018, 3, 5),
+                            maxTime: DateTime(2019, 6, 7),
+                            theme: const DatePickerTheme(
+                                backgroundColor: Colors.blueAccent,
+                                itemStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                                doneStyle: TextStyle(
+                                    color: Colors.white, fontSize: 16)),
+                            onChanged: (date) {}, onConfirm: (date) {
+                          String formattedDate =
+                              DateFormat('yyyy年MM月dd日 – kk:mm').format(date);
+                          timeInputController.text = formattedDate;
+                        }, currentTime: DateTime.now(), locale: LocaleType.zh);
+                      },
+                      decoration: InputDecoration(labelText: '歸還日期'),
+                    ),
+                    TextField(
+                      controller: nameInputController,
+                      decoration: InputDecoration(labelText: '名字'),
+                    ),
+                    TextField(
+                      controller: moneyInputController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(labelText: '金額'),
+                    ),
+                    TextField(
+                      controller: remarkInputController,
+                      decoration: InputDecoration(labelText: '備註'),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 20,
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    controller.rentCars(
-                        name: nameInputController.text,
-                        returnTime: timeInputController.text,
-                        remark: remarkInputController.text,
-                        money: moneyInputController.text);
-                  },
-                  child: Text('送出'),
-                ),
-              ],
-            ),
-          ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      nameInputController.text = '';
+                      timeInputController.text = '';
+                      remarkInputController.text = '';
+                      moneyInputController.text = '';
+                    },
+                    child: Text('清除'),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      controller.rentCars(
+                          name: nameInputController.text,
+                          returnTime: timeInputController.text,
+                          remark: remarkInputController.text,
+                          money: moneyInputController.text);
+                    },
+                    child: Text('送出'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     });
